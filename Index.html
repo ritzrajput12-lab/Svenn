@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You <3</title>
+    <style>
+        :root {
+            --primary-lavender: #c7b0ff; /* Lavender */
+            --dark-lavender: #a98eff;
+            --bg-color: #0a0a1a; /* Deep blue almost black */
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: var(--bg-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            color: var(--primary-lavender);
+        }
+
+        /* Falling Stars Background */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            /* A subtle nebula gradient */
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+        }
+
+        .star {
+            position: absolute;
+            background-color: white;
+            width: 2px;
+            height: 2px;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: fall 10s linear infinite;
+            box-shadow: 0 0 5px #fff, 0 0 10px #fff;
+        }
+
+        @keyframes fall {
+            0% { transform: translate(0, -10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translate(-100px, 110vh) rotate(45deg); opacity: 0; }
+        }
+
+        /* Main Card / Slider Container */
+        .card {
+            background: rgba(20, 20, 40, 0.85); /* Dark translucent card */
+            padding: 2.5rem;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            z-index: 10;
+            border: 1px solid var(--dark-lavender);
+            backdrop-filter: blur(10px);
+            overflow: hidden; /* Hide overflow for slider */
+        }
+
+        /* Slides */
+        .slider-container {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            min-width: 100%;
+            box-sizing: border-box;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Content Styling */
+        .slide-photo {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            border: 3px solid var(--primary-lavender);
+        }
+
+        h1 {
+            color: var(--primary-lavender);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 10px var(--dark-lavender);
+        }
+
+        p.slide-text {
+            color: var(--primary-lavender);
+            font-size: 1.4rem;
+            line-height: 1.6;
+            margin-top: 0;
+        }
+
+        .message {
+            color: var(--primary-lavender);
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .envelope-icon {
+            font-size: 60px;
+            margin-bottom: 1.5rem;
+            color: var(--primary-lavender);
+        }
+
+        /* Navigation Buttons */
+        .nav-btn {
+            background-color: var(--dark-lavender);
+            color: var(--bg-color);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        .nav-btn:hover {
+            background-color: var(--primary-lavender);
+            transform: scale(1.05);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stars-container" id="stars-container"></div>
+
+    <audio id="bg-music" loop>
+        <source src="https://www.myinstants.com/media/sounds/martin-garrix-troye-sivan-there-for-you-official-video.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <div class="card">
+        <div class="slider-container" id="slider">
+            
+            <div class="slide">
+                <img src="image_0.png" alt="Our Photo" class="slide-photo">
+                <p class="slide-text">I love spending 99 nights with u <3</p>
+            </div>
+
+            <div class="slide">
+                <p class="slide-text" style="font-size: 2rem;">we can also make it 6969 as well ;)</p>
+            </div>
+
+            <div class="slide">
+                <div class="envelope-icon">💖</div>
+                <h1>Hey You!</h1>
+                <div class="message">
+                    <p>I just wanted to let you know that you've been on my mind today. You make everything a little bit brighter just by being you! 🌸</p>
+                    <p><strong>- Your Name</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-container">
+            <button class="nav-btn" id="prev-btn">Previous</button>
+            <button class="nav-btn" id="next-btn">Next</button>
+        </div>
+        <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--dark-lavender);">
+            <button id="play-music-btn" class="nav-btn" style="padding: 8px 15px; font-size: 0.9rem;">▶ Play Music</button>
+        </div>
+
+    </div>
+
+    <script>
+        // Generate Falling Stars
+        function createStar() {
+            const container = document.getElementById('stars-container');
+            const star = document.createElement('div');
+            star.classList.add('star');
+            star.style.left = Math.random() * 100 + 'vw';
+            star.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            star.style.width = (Math.random() * 3) + 'px';
+            star.style.height = star.style.width;
+            
+            container.appendChild(star);
+
+            setTimeout(() => {
+                star.remove();
+            }, 10000);
+        }
+
+        // Create many stars initially
+        for(let i=0; i<100; i++) {
+            setTimeout(createStar, Math.random() * 10000);
+        }
+        setInterval(createStar, 200);
+
+        // Slider Logic
+        const slider = document.getElementById('slider');
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        let currentSlide = 0;
+
+        function updateSlider() {
+            slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+        }
+
+        nextBtn.addEventListener('click', () => {
+            currentSlide = (currentSlide + 1) % slides.length;
+            updateSlider();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+            updateSlider();
+        });
+
+        // Music Logic
+        const music = document.getElementById('bg-music');
+        const playBtn = document.getElementById('play-music-btn');
+
+        playBtn.addEventListener('click', () => {
+            if (music.paused) {
+                music.play();
+                playBtn.innerText = '❚❚ Pause Music';
+            } else {
+                music.pause();
+                playBtn.innerText = '▶ Play Music';
+            }
+        });
+
+    </script>
+</body>
+</html>
+
